@@ -1,3 +1,5 @@
 {
-  "mongoURI": "mongodb+srv://yotakeshima:yoshi@leaguefantasy.oimxv3m.mongodb.net/"
+  "mongoURI": "mongodb+srv://yotakeshima:yoshi@leaguefantasy.oimxv3m.mongodb.net/",
+  "jwtSecret": "mysecrettoken",
+  "api_key": "RGAPI-df92694c-c1a2-4766-acc0-8744601927cf"
 }
