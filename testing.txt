@@ -1,0 +1,7 @@
+"id": "eHNz11Qsx4UEa49MHZBGArL9fTgfK-kJgGi7AQewETFXh7U",
+"accountId": "a9NxKBT0IEac4CC8KvcnR2OA93QquXtnlYNwepCef8vw_A",
+"puuid": "Hcgd1iklzGOPDIQIVrF-LbglWSO8rYK8wASdBMbcY58GW_V4VHUkgFT7ULXEra4HeVqTFxdJowbT6w",
+"name": "IpunchYOU",
+"profileIconId": 539,
+"revisionDate": 1674016037000,
+"summonerLevel": 62
