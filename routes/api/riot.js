@@ -24,18 +24,19 @@ router.post('/', auth, async (req, res) => {
         .json({ errors: [{ msg: 'Summoner does not exist' }] });
     }
 
-    const summonerId = await getSummonerId(summonerName, apiKey);
-    const summonerLevel = await getSummonerLevel(summonerId, apiKey);
-    const matchHistory = await getMatchHistory(summonerId, apiKey);
-    const data = await getMatchData(matchHistory, apiKey);
+    const { puuid, summonerLevel, profileIconId } = await getSummonerData(
+      summonerName,
+      apiKey
+    );
+    const matchHistory = await getMatchHistory(puuid, apiKey);
 
     const profileFields = {
       user: req.user.id,
       summonerName: summonerName,
-      summonerId: summonerId,
+      puuid: puuid,
       summonerLevel: summonerLevel,
+      profileIconId: profileIconId,
       matchHistory: matchHistory,
-      data: data,
     };
 
     let profile = await Profile.findOne({ summonerName });
@@ -80,7 +81,7 @@ async function checkSummonerExist(summonerName, apiKey) {
   }
 }
 
-async function getSummonerId(summonerName, apiKey) {
+async function getSummonerData(summonerName, apiKey) {
   try {
     const response = await axios.get(
       `https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`,
@@ -90,23 +91,7 @@ async function getSummonerId(summonerName, apiKey) {
         },
       }
     );
-    return response.data.id;
-  } catch (err) {
-    throw err;
-  }
-}
-
-async function getSummonerLevel(summonerId, apiKey) {
-  try {
-    const response = await axios.get(
-      `https://na1.api.riotgames.com/lol/summoner/v4/summoners/${summonerId}`,
-      {
-        headers: {
-          'X-Riot-Token': apiKey,
-        },
-      }
-    );
-    return response.data.summonerLevel;
+    return response.data;
   } catch (err) {
     throw err;
   }

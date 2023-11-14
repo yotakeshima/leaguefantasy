@@ -16,11 +16,11 @@ const ProfileSchema = new mongoose.Schema({
   summonerLevel: {
     type: Number,
   },
+  profileIconId: {
+    type: Number,
+  },
   matchHistory: {
     type: Array,
-  },
-  data: {
-    type: Object,
   },
 });
 
