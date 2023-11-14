@@ -4,6 +4,8 @@ const router = express.Router();
 
 const config = require('config');
 
+const auth = require('../../middleware/auth');
+
 const axios = require('axios');
 
 const Profile = require('../../models/Profile');
@@ -55,7 +57,7 @@ router.post('/', auth, async (req, res) => {
 
     await profile.save();
 
-    res.json(profile);
+    return res.json(profile);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
