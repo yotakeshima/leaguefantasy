@@ -9,7 +9,7 @@ const ProfileSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  summonerId: {
+  puuid: {
     type: String,
     required: true,
   },

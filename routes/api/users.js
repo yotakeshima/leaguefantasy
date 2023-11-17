@@ -14,6 +14,20 @@ const User = require('../../models/User');
 
 const axios = require('axios');
 
+// @route   GET api/users
+// @desc    Test route | Get all users
+// @access  Public
+
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.json(users);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // @route   POST api/users
 // @desc    Register user
 // @access  Public

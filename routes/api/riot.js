@@ -10,6 +10,51 @@ const axios = require('axios');
 
 const Profile = require('../../models/Profile');
 
+// Testing route
+// @route   GET api/riot
+// @desc    Getting summonerData
+// @access  Public
+
+router.get('/', async (req, res) => {
+  try {
+    const apiKey = config.get('api_key');
+    const summonerName = 'IpunchYOU';
+    const { puuid, summonerLevel, profileIconId } = await getSummonerData(
+      summonerName,
+      apiKey
+    );
+    return res.json({ puuid, summonerLevel, profileIconId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Testing Route
+// @route   GET api/riot/matchHistory
+// @desc    Getting matchHistory
+// @access  Public
+
+router.get('/matchHistory', async (req, res) => {
+  try {
+    const apiKey = config.get('api_key');
+    const summonerName = 'IpunchYOU';
+    const { puuid } = await getSummonerData(summonerName, apiKey);
+    const matchHistory = await getMatchHistory(puuid, apiKey);
+    if (matchHistory.status < 200 || matchHistory.status >= 300) {
+      // Handle the error based on the status code or other response details
+      return res
+        .status(matchHistory.status)
+        .json({ error: 'Request failed', details: matchHistory.data });
+    }
+
+    return res.json(matchHistory.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   POST api/riot
 // @desc    Create a profile based on the user's summoner name
 // @access  Private
@@ -30,7 +75,8 @@ router.post('/', auth, async (req, res) => {
       summonerName,
       apiKey
     );
-    const matchHistory = await getMatchHistory(puuid, apiKey);
+
+    const { data } = await getMatchHistory(puuid, apiKey);
 
     const profileFields = {
       user: req.user.id,
@@ -38,7 +84,7 @@ router.post('/', auth, async (req, res) => {
       puuid: puuid,
       summonerLevel: summonerLevel,
       profileIconId: profileIconId,
-      matchHistory: matchHistory,
+      matchHistory: data, // data is deconstructed from the response List[Strings]
     };
 
     let profile = await Profile.findOne({ summonerName });
@@ -66,7 +112,7 @@ router.post('/', auth, async (req, res) => {
 
 async function checkSummonerExist(summonerName, apiKey) {
   try {
-    const response = await axios.get(
+    await axios.get(
       `https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summonerName}`,
       {
         headers: {
@@ -102,7 +148,7 @@ async function getSummonerData(summonerName, apiKey) {
 async function getMatchHistory(puuid, apiKey) {
   try {
     const response = await axios.get(
-      `https://na1.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=20`,
+      `https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?start=0&count=20&`,
       {
         headers: {
           'X-Riot-Token': apiKey,
